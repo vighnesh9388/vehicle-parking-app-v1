@@ -1,2 +1,2 @@
 # vehicle-parking-app-v1
-This is a project that allows users to book a parking spot for their 4-wheeler
+This is a Flask-based web application that allows users to book, release, and manage parking spots, while admins can manage parking lots and view user activity.
