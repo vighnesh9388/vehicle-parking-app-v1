@@ -1,5 +1,4 @@
 from flask import Flask
-
 from models import db, User
 from werkzeug.security import generate_password_hash
 
@@ -18,9 +17,9 @@ def create_app():
         if not User.query.filter_by(id=0).first():
             db.session.add(User(
                 id=0,
-                name='Admin',
+                name='admin',
                 email='admin@email.com',
-                password=generate_password_hash('admin123'),
+                password=generate_password_hash('admin'),
                 is_admin=True,
             ))
             db.session.commit()
