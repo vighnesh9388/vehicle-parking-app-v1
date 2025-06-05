@@ -1,4 +1,5 @@
 from . import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -13,3 +14,6 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     
     reservations = db.relationship('Reserve', backref='user', lazy=True)
+    
+    def check_password(self, password):
+        return check_password_hash(self.passhash, password)
