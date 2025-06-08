@@ -16,4 +16,4 @@ class User(db.Model):
     reservations = db.relationship('Reserve', backref='user', lazy=True)
     
     def check_password(self, password):
-        return check_password_hash(self.passhash, password)
+        return check_password_hash(self.password, password)

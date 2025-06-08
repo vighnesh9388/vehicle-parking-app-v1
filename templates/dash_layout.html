@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        🚗 Park-Karo! - Dashboard
+        {% endblock %}
+    </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    {% block styles %}{% endblock %}
+</head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<body>
+
+<nav class="navbar navbar-expand-lg" style="background-color: #ffc800; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.264); position: relative;">
+  <div class="container-fluid">
+    <a class="navbar-brand text-dark fw-bold" href="/admin/dashboard">🚗 Park-Karo!</a>
+    <div class="navbar-center position-absolute top-50 start-50 translate-middle">
+      <ul class="navbar-nav d-flex flex-row gap-4">
+        <li class="nav-item">
+        <a class="nav-link fw-bold text-dark {% if request.path == '/admin/dashboard' %}active bg-secondary rounded{% endif %}" href="/admin/dashboard">Home</a>
+        </li>
+        {% if session.get('is_admin') %}
+        <li class="nav-item">
+          <a class="nav-link fw-bold text-dark {% if request.path == '/admin/dashboard/users' %}active bg-secondary rounded{% endif %}" href="/admin/dashboard/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-bold text-dark {% if request.path == '/admin/dashboard/search' %}active bg-secondary rounded{% endif %}" href="/admin/dashboard/search">Search</a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link fw-bold text-dark {% if request.path == '/admin/dashboard/summary' %}active bg-secondary rounded{% endif %}" href="/admin/dashboard/summary">Summary</a>
+        </li>
+      </ul>
+    </div>
+        
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link text-dark" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-fill"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+          <li><a class="dropdown-item" href="#">Edit Profile</a></li>
+          <li><a class="dropdown-item text-danger" href="/">Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+<div class="container mt-4">
+    {% block content %}
+    
+    {% endblock %}
+</div>
+</body>
+</html>
+

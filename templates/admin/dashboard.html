@@ -1,0 +1,78 @@
+  {% extends "dash_layout.html" %}
+
+  <title>
+      {% block title %}
+      🚗 Park-Karo! - ADMIN
+      {% endblock %}
+  </title>
+
+{% block styles %}
+<style>
+  body {
+    background-color: #ebebeb;
+  }
+  .card {
+    border-radius: 1.2rem !important;
+  }
+  .card.shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .btn-warning {
+    background-color: #ffc800;
+    border: none;
+  }
+  .btn-warning:hover {
+    background-color: #e6b800;
+  }
+  .spot-box {
+    border-radius: 0.5rem;
+  }
+</style>
+{% endblock %}
+
+  {% block content %}
+  <div class="container mt-4">
+    <div class="card shadow rounded p-4">
+      <h1 class="mb-3 fw-normal text-center">Parking Lots</h1>
+
+      
+    <div class="row">
+      {% for lot in lots %}
+      <div class="col-md-6 mb-4">
+        <div class="card shadow p-3 rounded">
+          <h3 class="card-title fw-normal text-center">{{ lot.name }} [Lot #{{ lot.id }}]</h3>
+          <div class="text-center mb-2">
+            <a href="{{ url_for('auth.edit_lot', lot_id=lot.id) }}" class="btn btn-primary btn-sm">Edit</a>
+            <a href="{{ url_for('auth.delete_lot', lot_id=lot.id) }}" class="btn btn-danger btn-sm">Delete</a>
+          </div>
+          {% set occupied = lot.total_spots - lot.spots | selectattr('status', 'equalto', False) | list | length %}
+          {% set is_full = occupied == lot.total_spots %}
+          <p class="text-center fw-bold {{ 'text-danger' if is_full else 'text-success' }}">
+            (Occupied: {{ occupied }}/{{ lot.total_spots }})
+          </p>
+          <hr>
+          <div class="d-flex flex-wrap justify-content-center">
+          {% for spot in lot.spots %}
+          {% if not spot.status %}
+            <a href="{{ url_for('auth.view_spot', spot_id=spot.id) }}" class="text-dark text-decoration-none">
+              <div class="m-1 px-2 py-1 bg-success text-white rounded">A</div>
+            </a>
+          {% else %}
+            <a href="{{ url_for('auth.view_spot', spot_id=spot.id) }}">
+              <div class="m-1 px-2 py-1 bg-danger text-white rounded">O</div>
+            </a>
+          {% endif %}
+        {% endfor %}
+        </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>  
+
+      <div class="d-flex justify-content-center mt-4 mb-4">
+        <a href="{{ url_for('auth.add_lot') }}" class="btn btn-warning">+ Add Lot</a>
+      </div>
+    </div>
+  </div>
+  {% endblock %}

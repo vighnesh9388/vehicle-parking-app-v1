@@ -1,0 +1,54 @@
+{% extends "dash_layout.html" %}
+<title>
+    {% block title %}
+    🚗 Park-Karo! - Add Lot
+    {% endblock %}
+</title>
+{% block content %}
+<div class="container d-flex justify-content-center">
+    <div class="card shadow p-4 w-100" style="max-width: 420px;">
+        <h3 class="h2 mb-3 fw-normal text-center">View/Delete Parking Spot</h3>
+    <div class="mb-3">
+      <label>ID:</label>
+      <div class="form-control text-center fw-bold">{{ spot.id }}</div>
+    </div>
+    <div class="mb-3">
+      <label>Status:</label>
+      <div class="form-control text-center fw-bold {{ 'text-success' if not spot.status else 'text-danger' }}">
+        {{ 'A' if not spot.status else 'O' }}
+      </div>
+    </div>
+
+    {% if not spot.status %}
+        <form action="{{ url_for('auth.delete_spot', spot_id=spot.id) }}" method="POST">
+            <div class="row mt-3">
+            <div class="col">
+                <button class="w-100 btn btn-danger" type="submit">Delete</button>
+            </div>
+            <div class="col">
+                <a href="{{ url_for('auth.admin_dashboard') }}" class="w-100 btn btn-secondary" type="button">Close</a>
+            </div>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-warning text-center">Note: Cannot delete occupied parking spot.</div>
+        <div class="row mt-3">
+            <div class="col">
+            <a href="{{ url_for('auth.admin_dashboard') }}" class="w-100 btn btn-secondary" type="button">Close</a>
+            </div>
+        </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+  body {
+    background-color: #ebebeb;
+  }
+  .card {
+    border-radius: 1rem;
+  }
+</style>
+{% endblock %}

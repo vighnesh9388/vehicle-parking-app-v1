@@ -8,7 +8,7 @@ class Lot(db.Model):
     price_per_hour = db.Column(db.Float, nullable=False)
     address = db.Column(db.String(200), nullable=False)
     pincode = db.Column(db.String(10), nullable=False)
-    total_slots = db.Column(db.Integer, nullable=False)
+    total_spots = db.Column(db.Integer, nullable=False)
     
     spots = db.relationship('Spot', backref='lot', lazy=True)
  

@@ -1,0 +1,66 @@
+  {% extends "dash_layout.html" %}
+
+  <title>
+      {% block title %}
+      🚗 Park-Karo! - ADMIN
+      {% endblock %}
+  </title>
+
+{% block styles %}
+<style>
+  body {
+    background-color: #ebebeb;
+  }
+  .card {
+    border-radius: 1.2rem !important;
+  }
+  .card.shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .btn-warning {
+    background-color: #ffc800;
+    border: none;
+  }
+  .btn-warning:hover {
+    background-color: #e6b800;
+  }
+  .spot-box {
+    border-radius: 0.5rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+<div class="card shadow rounded p-4">
+  <h1 class="mb-3 fw-normal text-center">Registered Users</h1>
+  <div class="table-responsive">
+  <table class="table table-striped table-bordered table-hover align-middle ">
+    <thead class="table-dark text-center">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Pincode</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+          {% if user.id != 0 %}
+          <tr>
+            <td class="text-center">{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.address }}</td>
+            <td>{{ user.pincode }}</td>
+          </tr> 
+          {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

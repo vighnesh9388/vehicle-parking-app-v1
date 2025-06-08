@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from models import db, User
 from werkzeug.security import generate_password_hash
 from controllers.auth import api as auth_api
@@ -31,6 +31,10 @@ def create_app():
     @app.route("/")
     def home():
         return render_template("home.html")
+    
+    @app.context_processor
+    def inject_request():
+        return dict(request=request)
     
     return app
 
