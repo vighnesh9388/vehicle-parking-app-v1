@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session
-from models import db, User, Lot, Spot
+from models import db, User, Lot, Spot, Reserve
 from werkzeug.security import check_password_hash, generate_password_hash
 
 api = Blueprint('auth', __name__)
@@ -74,10 +74,6 @@ def admin_dashboard():
     lots = Lot.query.all()
     return render_template("admin/dashboard.html", lots=lots)
 
-@api.route("/user/dashboard")
-def user_dashboard():
-    return render_template("user/dashboard.html")
-
 @api.route('/admin/add_lot', methods=["GET", "POST"])
 def add_lot():
     if request.method == "POST":
@@ -107,7 +103,7 @@ def add_lot():
         )
 
         db.session.add(new_lot)
-        db.session.commit()
+        db.session.flush()
         
         for i in range(int(total_spots)):
             spot = Spot(
@@ -207,3 +203,83 @@ def delete_spot(spot_id):
 def admin_users():
     users = User.query.all()
     return render_template("admin/users.html", users=users)
+
+@api.route("/user/dashboard")
+def user_dashboard():
+    lots = Lot.query.all()
+    user_lots = []
+
+    for lot in lots:
+        available_spot = Spot.query.filter_by(lot_id=lot.id, status=False).first()
+        user_lots.append({
+            "id": lot.id,
+            "name": lot.name,
+            "address": lot.address,
+            "pincode": lot.pincode,
+            "price_per_hour": lot.price_per_hour,
+            "available_spots": Spot.query.filter_by(lot_id=lot.id, status=False).count(),
+            "first_available_spot_id": available_spot.id if available_spot else None
+        })
+
+    return render_template("user/dashboard.html", lots=user_lots)
+
+from datetime import datetime
+
+@api.route("/user/book/<int:spot_id>", methods=["GET", "POST"])
+def book_spot(spot_id):
+    spot = Spot.query.get_or_404(spot_id)
+    lot = Lot.query.get_or_404(spot.lot_id)
+    user_id = session.get('user_id')
+
+    if request.method == "POST":
+        vehicle_number = request.form.get("vehicle_number")
+        reservation = Reserve(
+            spot_id=spot.id,
+            user_id=user_id,
+            vehicle_number=vehicle_number,
+            start_time=datetime.now(),
+            end_time= None,
+            cost_per_hour=lot.price_per_hour
+        )
+        spot.status = True
+        db.session.add(reservation)
+        db.session.commit()
+        flash("Reservation confirmed!")
+        return redirect(url_for('auth.user_dashboard'))
+
+    return render_template("user/reserve.html", spot=spot, lot=lot, user_id=user_id,)
+
+@api.route("/user/reservations")
+def user_reservations():
+    reservations = [
+        {
+            "id": r.id,
+            "location": r.spot.lot.name,
+            "pincode": r.spot.lot.pincode,
+            "address": r.spot.lot.address,
+            "vehicle_number": r.vehicle_number,
+            "start_time": r.start_time,
+            "end_time": r.end_time
+        }
+        for r in Reserve.query.filter_by(user_id=session["user_id"]).order_by(Reserve.start_time.desc()).all()
+    ]
+
+    return render_template("user/reservations.html", reservations=reservations)
+
+@api.route("/user/release/<int:reservation_id>", methods=["POST"])
+def release_reservation(reservation_id):
+    reservation = Reserve.query.get_or_404(reservation_id)
+
+    if reservation.end_time is None:
+        reservation.end_time = datetime.now()
+
+        # Free up the spot again
+        spot = Spot.query.get(reservation.spot_id)
+        if spot:
+            spot.status = False
+
+        db.session.commit()
+        flash("Spot released successfully!")
+
+    return redirect(url_for("auth.user_reservations"))
+

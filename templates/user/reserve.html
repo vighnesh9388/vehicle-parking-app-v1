@@ -1,0 +1,61 @@
+{% extends "dash_layout.html" %}
+<title>
+    {% block title %}
+    🚗 Park-Karo! - Reserve Spot
+    {% endblock %}
+</title>
+
+{% block content %}
+<div class="container d-flex justify-content-center">
+    <div class="card shadow p-4 w-100" style="max-width: 420px;">
+        <h3 class="h2 mb-3 fw-normal text-center">Book Parking Spot</h3>
+        <form method="POST">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="spotID" name="spot_id" value="{{ spot.id }}" readonly>
+                <label for="spotID">Spot ID</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="lotID" name="lot_id" value="{{ lot.id }}" readonly>
+                <label for="lotID">Lot ID</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="userID" name="user_id" value="{{ user_id }}" readonly>
+                <label for="userID">User ID</label>
+            </div>
+
+            <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="cost_display" name="cost_display" value="${{ lot.price_per_hour }}/hr" readonly>
+            <label for="cost_display">Price</label>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="text" class="form-control" id="vehicleNumber" name="vehicle_number" placeholder="Enter vehicle number" required>
+                <label for="vehicleNumber">Vehicle Number</label>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <button class="w-100 btn btn-warning" type="submit">Reserve</button>
+                </div>
+                <div class="col">
+                    <a href="{{ url_for('auth.user_dashboard') }}" class="w-100 btn btn-danger" type="button">Cancel</a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+  body {
+    background-color: #ebebeb;
+  }
+  .card {
+    border-radius: 1rem;
+  }
+</style>
+{% endblock %}

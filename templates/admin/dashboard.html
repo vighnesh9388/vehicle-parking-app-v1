@@ -38,9 +38,9 @@
       
     <div class="row">
       {% for lot in lots %}
-      <div class="col-md-6 mb-4">
+      <div class="col-md-4 mb-4">
         <div class="card shadow p-3 rounded">
-          <h3 class="card-title fw-normal text-center">{{ lot.name }} [Lot #{{ lot.id }}]</h3>
+          <h3 class="card-title fw-normal text-center">{{ lot.name }}<br><h5 class="card-title fw-normal text-center">[Lot #{{ lot.id }}]</h5></h3>
           <div class="text-center mb-2">
             <a href="{{ url_for('auth.edit_lot', lot_id=lot.id) }}" class="btn btn-primary btn-sm">Edit</a>
             <a href="{{ url_for('auth.delete_lot', lot_id=lot.id) }}" class="btn btn-danger btn-sm">Delete</a>
@@ -58,7 +58,7 @@
               <div class="m-1 px-2 py-1 bg-success text-white rounded">A</div>
             </a>
           {% else %}
-            <a href="{{ url_for('auth.view_spot', spot_id=spot.id) }}">
+            <a href="{{ url_for('auth.view_spot', spot_id=spot.id) }}" class="text-dark text-decoration-none">
               <div class="m-1 px-2 py-1 bg-danger text-white rounded">O</div>
             </a>
           {% endif %}

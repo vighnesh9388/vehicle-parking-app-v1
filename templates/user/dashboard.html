@@ -4,5 +4,58 @@
     🚗 Park-Karo! - Dashboard
     {% endblock %}
 </title>
+{% block styles %}
+<style>
+  body {
+    background-color: #ebebeb;
+  }
+  .card {
+    border-radius: 1.2rem !important;
+  }
+  .card.shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .btn-warning {
+    background-color: #ffc800;
+    border: none;
+  }
+  .btn-warning:hover {
+    background-color: #e6b800;
+  }
+  .spot-box {
+    border-radius: 0.5rem;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="container mt-4">
+  <div class="card shadow rounded p-4">
+    <h1 class="mb-3 fw-normal text-center">Available Parking Lots</h1>
+
+    {% if lots %}
+      <div class="row">
+        {% for lot in lots %}
+          <div class="col-md-4 mb-4">
+            <div class="card shadow p-3 rounded spot-box">
+              <h3>{{ lot.name }}</h3>
+              <p><strong>Address:</strong> {{ lot.address }}, {{ lot.pincode }}</p>
+              <p><strong>Available Spots:</strong> {{ lot.available_spots }}</p>
+              <p><strong>Price:</strong> ${{ lot.price_per_hour }}/hr</p>
+              {% if lot.first_available_spot_id %}
+                <form action="{{ url_for('auth.book_spot', spot_id=lot.first_available_spot_id) }}" method="GET">
+                  <button class="btn btn-warning w-100 fw-bold" type="submit">Reserve</button>
+                </form>
+              {% else %}
+                <p class="text-danger">No spots available</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center">No parking lots found.</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

@@ -10,11 +10,11 @@
         <h3 class="h2 mb-3 fw-normal text-center">View/Delete Parking Spot</h3>
     <div class="mb-3">
       <label>ID:</label>
-      <div class="form-control text-center fw-bold">{{ spot.id }}</div>
+      <div class="form-control text-center fw-bold" readonly>{{ spot.id }}</div>
     </div>
     <div class="mb-3">
       <label>Status:</label>
-      <div class="form-control text-center fw-bold {{ 'text-success' if not spot.status else 'text-danger' }}">
+      <div class="form-control text-center fw-bold {{ 'text-success' if not spot.status else 'text-danger' }}" readonly>
         {{ 'A' if not spot.status else 'O' }}
       </div>
     </div>
@@ -32,7 +32,7 @@
         </form>
         {% else %}
         <div class="alert alert-warning text-center">Note: Cannot delete occupied parking spot.</div>
-        <div class="row mt-3">
+        <div class="row">
             <div class="col">
             <a href="{{ url_for('auth.admin_dashboard') }}" class="w-100 btn btn-secondary" type="button">Close</a>
             </div>
