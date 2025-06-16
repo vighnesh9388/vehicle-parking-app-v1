@@ -39,7 +39,7 @@
 {% block content %}
 <div class="container mt-4">
   <div class="card shadow rounded p-4">
-    <h1 class="mb-4 fw-normal text-center">My Reservations</h1>
+    <h1 class="mb-4 fw-normal text-center">Reservation History - {{ user.name }}</h1>
 
     {% if reservations %}
     <div class="table-responsive">
@@ -51,7 +51,7 @@
             <th>Start Timestamp</th>
             <th>End Timestamp</th>
             <th>Cost</th>
-            <th>Action</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody class="text-center">
@@ -76,10 +76,10 @@
             </td>
             <td>
               {% if not r.end_time %}
-                <a href="{{ url_for('auth.release_spot', reservation_id=r.id) }}" class="btn btn-danger btn-sm">Release</a>
-              {% else %}
-                <span class="text-success">Parked out</span>
-              {% endif %}
+                <span class="text-danger">Parked</span>
+            {% else %}
+                <span class="text-success">Vacated</span>
+            {% endif %}
             </td>
           </tr>
           {% endfor %}
@@ -87,7 +87,7 @@
       </table>
     </div>
     {% else %}
-      <p class="text-center text-muted">You haven't made any reservations yet.</p>
+      <p class="text-center text-muted">This user has not made any reservations yet.</p>
     {% endif %}
   </div>
 </div>

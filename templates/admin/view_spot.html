@@ -15,7 +15,13 @@
     <div class="mb-3">
       <label>Status:</label>
       <div class="form-control text-center fw-bold {{ 'text-success' if not spot.status else 'text-danger' }}" readonly>
-        {{ 'A' if not spot.status else 'O' }}
+        {% if spot.status %}
+          <a href="{{ url_for('auth.view_occupied_spot', spot_id=spot.id) }}" class="text-decoration-none">
+            <span class="text-danger">O</span>
+          </a>
+        {% else %}
+          <span>A</span>
+        {% endif %}
       </div>
     </div>
 

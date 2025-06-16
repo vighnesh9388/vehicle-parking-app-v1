@@ -22,8 +22,12 @@
   <div class="container-fluid">
     {% if is_admin %}
     <a class="navbar-brand text-dark fw-bold" href="/admin/dashboard">🚗 Park-Karo!</a>
+    <p class="text-danger lead ms-2 mb-0">Admin</p>
     {% else %}
     <a class="navbar-brand text-dark fw-bold" href="/user/dashboard">🚗 Park-Karo!</a>
+    {% if user is defined %}
+    <p class="text-dark lead ms-2 mb-0">Welcome, {{user.name}}</p>
+    {% endif %}
     {% endif %}
     <div class="navbar-center position-absolute top-50 start-50 translate-middle">
       <ul class="navbar-nav d-flex flex-row gap-4">

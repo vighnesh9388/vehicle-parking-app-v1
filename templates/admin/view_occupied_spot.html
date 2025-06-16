@@ -1,0 +1,50 @@
+{% extends "dash_layout.html" %}
+<title>
+    {% block title %}
+    🚗 Park-Karo! - View Occupied Spot
+    {% endblock %}
+</title>
+{% block content %}
+<div class="container d-flex justify-content-center">
+    <div class="card shadow p-4 w-100" style="max-width: 420px;">
+        <h3 class="h2 mb-3 fw-normal text-center">Parking Spot Details</h3>
+    
+    <div class="form-floating mb-3">
+      <input class="form-control" value="{{ reservation.spot_id }}" readonly>
+      <label>Spot ID</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input class="form-control" value="{{ reservation.user_id }}" readonly>
+      <label>Customer ID</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input class="form-control" value="{{ reservation.vehicle_number }}" readonly>
+      <label>Vehicle Number</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input class="form-control" value="{{ reservation.start_time.strftime('%d-%m-%Y %H:%M') }}" readonly>
+      <label>Date/Time Of Parking</label>
+    </div>
+
+    <div class="form-floating mb-4">
+      <input class="form-control" value="${{ estimated_cost }}" readonly>
+      <label>Estimated Parking Cost</label>
+    </div>
+
+    <a href="{{ url_for('auth.admin_dashboard') }}" class="btn btn-secondary w-100">Close</a>
+  </div>
+</div>
+{% endblock %}
+{% block styles %}
+<style>
+  body {
+    background-color: #ebebeb;
+  }
+  .card {
+    border-radius: 1rem;
+  }
+</style>
+{% endblock %}

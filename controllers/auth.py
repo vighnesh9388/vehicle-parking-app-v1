@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template, flash, redirect, url_for, session
 from models import db, User, Lot, Spot, Reserve
 from werkzeug.security import check_password_hash, generate_password_hash
+import math
 
 api = Blueprint('auth', __name__)
 
@@ -71,8 +72,10 @@ def register():
 
 @api.route("/admin/dashboard")
 def admin_dashboard():
+    user_id = session.get("user_id")
+    user = User.query.get(user_id)
     lots = Lot.query.all()
-    return render_template("admin/dashboard.html", lots=lots)
+    return render_template("admin/dashboard.html", lots=lots, user=user, is_admin=True)
 
 @api.route('/admin/add_lot', methods=["GET", "POST"])
 def add_lot():
@@ -183,6 +186,20 @@ def view_spot(spot_id):
     spot = Spot.query.get_or_404(spot_id)
     return render_template("admin/view_spot.html", spot=spot)
 
+@api.route("/admin/spot/<int:spot_id>/details")
+def view_occupied_spot(spot_id):
+    spot = Spot.query.get_or_404(spot_id)
+
+    reservation = Reserve.query.filter_by(spot_id=spot.id).order_by(Reserve.start_time.desc()).first()
+
+    duration = datetime.now() - reservation.start_time
+    hours = duration.total_seconds() / 3600
+    estimated_cost = round(hours * reservation.cost_per_hour, 2)
+    
+
+    return render_template("admin/view_occupied_spot.html", reservation=reservation, estimated_cost=estimated_cost)
+
+
 @api.route('/admin/spot/<int:spot_id>/delete', methods=["POST"])
 def delete_spot(spot_id):
     spot = Spot.query.get_or_404(spot_id)
@@ -204,8 +221,31 @@ def admin_users():
     users = User.query.all()
     return render_template("admin/users.html", users=users)
 
+@api.route("/admin/user/<int:user_id>/reservations")
+def user_parking_history(user_id):
+    user = User.query.get_or_404(user_id)
+    
+    reservations = [
+        {
+            "id": r.id,
+            "location": r.spot.lot.name,
+            "address": r.spot.lot.address,
+            "pincode": r.spot.lot.pincode,
+            "vehicle_number": r.vehicle_number,
+            "start_time": r.start_time,
+            "end_time": r.end_time,
+            "cost_per_hour": r.cost_per_hour
+        }
+        for r in Reserve.query.filter_by(user_id=user_id).order_by(Reserve.start_time.desc()).all()
+    ]
+
+    return render_template("admin/user_history.html", user=user, reservations=reservations)
+
+
 @api.route("/user/dashboard")
 def user_dashboard():
+    user_id = session.get("user_id")
+    user = User.query.get(user_id)
     lots = Lot.query.all()
     user_lots = []
 
@@ -221,7 +261,7 @@ def user_dashboard():
             "first_available_spot_id": available_spot.id if available_spot else None
         })
 
-    return render_template("user/dashboard.html", lots=user_lots)
+    return render_template("user/dashboard.html", lots=user_lots, user=user, is_admin=False)
 
 from datetime import datetime
 
@@ -259,27 +299,31 @@ def user_reservations():
             "address": r.spot.lot.address,
             "vehicle_number": r.vehicle_number,
             "start_time": r.start_time,
-            "end_time": r.end_time
+            "end_time": r.end_time,
+            "cost_per_hour": r.cost_per_hour,
         }
         for r in Reserve.query.filter_by(user_id=session["user_id"]).order_by(Reserve.start_time.desc()).all()
     ]
 
     return render_template("user/reservations.html", reservations=reservations)
 
-@api.route("/user/release/<int:reservation_id>", methods=["POST"])
-def release_reservation(reservation_id):
+@api.route("/user/release/<int:reservation_id>", methods=["GET", "POST"])
+def release_spot(reservation_id):
     reservation = Reserve.query.get_or_404(reservation_id)
+    now = datetime.now()
+    duration = datetime.now() - reservation.start_time
+    hours = duration.total_seconds() / 3600
+    cost = round(hours * reservation.cost_per_hour, 2)
 
-    if reservation.end_time is None:
-        reservation.end_time = datetime.now()
-
-        # Free up the spot again
+    if request.method == "POST":
+        reservation.end_time = now
         spot = Spot.query.get(reservation.spot_id)
         if spot:
             spot.status = False
-
         db.session.commit()
-        flash("Spot released successfully!")
+        flash(f"Payment of ${cost} was successful!")
+        return redirect(url_for('auth.user_reservations'))
 
-    return redirect(url_for("auth.user_reservations"))
+    return render_template("user/release.html", reservation=reservation, now=datetime.now(), estimated_cost=cost)
+
 
