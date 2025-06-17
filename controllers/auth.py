@@ -241,6 +241,46 @@ def user_parking_history(user_id):
 
     return render_template("admin/user_history.html", user=user, reservations=reservations)
 
+@api.route("/admin/dashboard/search")
+def admin_search():
+    filter_by = request.args.get("filter_by")
+    query = request.args.get("query")
+    results = []
+
+    if filter_by and query:
+        if filter_by == "spot_id":
+            from models import Spot  # adjust if needed
+            spot = Spot.query.filter_by(id=query).first()
+            if spot:
+                results.append({
+                    "type": "Spot",
+                    "id": spot.id,
+                    "lot_id": spot.lot_id,
+                    "status": "Occupied" if spot.status else "Available"
+                })
+        elif filter_by == "user_id":
+            from models import User
+            user = User.query.filter_by(id=query).first()
+            if user:
+                results.append({
+                    "type": "User",
+                    "id": user.id,
+                    "name": user.name,
+                    "email": user.email
+                })
+        elif filter_by == "location":
+            from models import Lot
+            lots = Lot.query.filter(Lot.address.ilike(f"%{query}%")).all()
+            for lot in lots:
+                results.append({
+                    "type": "Lot",
+                    "id": lot.id,
+                    "name": lot.name,
+                    "address": lot.address,
+                    "available": sum(1 for s in lot.spots if not s.status)
+                })
+
+    return render_template("admin/search.html", results=results, current_path="/admin/dashboard/search")
 
 @api.route("/user/dashboard")
 def user_dashboard():
