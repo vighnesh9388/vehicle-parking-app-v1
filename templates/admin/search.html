@@ -76,7 +76,11 @@
               {% elif r.type == 'Lot' %}
                 <b>Name:</b> {{ r.name }}<br>
                 <b>Address:</b> {{ r.address }}<br>
-                <b>Available Spots:</b> {{ r.available }}
+                {% if r.available is defined %}
+                <p><strong>Available Spots:</strong> {{ r.available }}</p>
+              {% elif r.status == 'inactive' %}
+                <p class="text-danger fw-bold">Lot was deleted</p>
+              {% endif %}
               {% endif %}
             </td>
           </tr>

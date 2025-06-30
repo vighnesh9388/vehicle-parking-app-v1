@@ -1,0 +1,64 @@
+{% extends "dash_layout.html" %}
+<title>
+  {% block title %}
+  🚗 Park-Karo! - Edit Profile
+  {% endblock %}
+</title>
+
+{% block content %}
+<div class="container d-flex justify-content-center">
+    <div class="card shadow p-4 w-100" style="max-width: 420px;">
+        <h3 class="h2 mb-3 fw-normal text-center">Edit Profile</h3>
+    <form method="POST">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="userID" value="{{ user.id }}" readonly>
+        <label for="userID">User ID</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="name" name="name" value="{{ user.name }}" required>
+        <label for="name">Name</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+        <label for="email">Email</label>
+      </div>
+      <div class="form-floating mb-3">
+      <input type="password" class="form-control" id="password" name="password" required>
+      <label for="password">Password</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="phone" name="phone" value="{{ user.phone }}">
+        <label for="phone">Phone</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="address" name="address" value="{{ user.address }}">
+        <label for="address">Address</label>
+      </div>
+      <div class="form-floating mb-4">
+        <input type="text" class="form-control" id="pincode" name="pincode" value="{{ user.pincode }}">
+        <label for="pincode">Pincode</label>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <button class="w-100 btn btn-warning" type="submit">Save Changes</button>
+        </div>
+        <div class="col">
+          <a href="{{ redirect_url }}" class="w-100 btn btn-secondary">Cancel</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+  body {
+    background-color: #ebebeb;
+  }
+  .card {
+    border-radius: 1rem;
+  }
+</style>
+{% endblock %}

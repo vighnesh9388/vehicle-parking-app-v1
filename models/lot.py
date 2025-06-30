@@ -9,6 +9,7 @@ class Lot(db.Model):
     address = db.Column(db.String(200), nullable=False)
     pincode = db.Column(db.String(10), nullable=False)
     total_spots = db.Column(db.Integer, nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
     
     spots = db.relationship('Spot', backref='lot', lazy=True)
  

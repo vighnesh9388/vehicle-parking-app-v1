@@ -1,0 +1,97 @@
+{% extends "dash_layout.html" %}
+
+<title>
+  {% block title %}
+  🚗 Park-Karo! - USER
+  {% endblock %}
+</title>
+
+{% block styles %}
+<style>
+  body {
+    background-color: #ebebeb;
+  }
+  .card {
+    border-radius: 1.2rem !important;
+  }
+  .card.shadow {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow rounded p-4">
+    <h1 class="mb-3 fw-normal text-center">Your Parking Summary</h1>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div class="row">
+      <div class="col-md-4">
+        <h3 class="text-center mb-4">Money Spent per Lot</h3>
+        {% if revenue_data and revenue_data | selectattr('spent', 'gt', 0) | list %}
+          <canvas id="spentChart"></canvas>
+        {% else %}
+          <p class="text-center text-muted">No data to display.</p>
+        {% endif %}
+      </div>
+
+      <div class="col-md-6 offset-md-2">
+        <h3 class="text-center mb-4">Total Hours Parked per Lot</h3>
+        {% if hour_data and hour_data | selectattr('hours', 'gt', 0) | list %}
+          <canvas id="hourChart"></canvas>
+        {% else %}
+          <p class="text-center text-muted">No parking hours yet.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <script>
+
+      const spentData = JSON.parse('{{ revenue_data | tojson | safe }}');
+      const spentCtx = document.getElementById('spentChart').getContext('2d');
+      const filteredSpentData = spentData.filter(d => d.spent > 0);
+
+      new Chart(spentCtx, {
+        type: 'doughnut',
+        data: {
+          labels: filteredSpentData.map(d => d.lot),
+          datasets: [{
+            label: '$ Spent',
+            data: filteredSpentData.map(d => d.spent),
+            backgroundColor: ['#ffce56', '#8affc1', '#b784f2', '#f59393'],
+            borderColor: '#000',
+          }]
+        }
+      });
+
+      const hourData = JSON.parse('{{ hour_data | tojson | safe }}');
+      const hourCtx = document.getElementById('hourChart').getContext('2d');
+      const filteredHourData = hourData.filter(d => d.hours > 0);
+
+      new Chart(hourCtx, {
+        type: 'bar',
+        data: {
+          labels: filteredHourData.map(d => d.lot),
+          datasets: [{
+            label: 'Total Hours',
+            data: filteredHourData.map(d => d.hours),
+            backgroundColor:  '#b784f2',
+            borderWidth: 2,
+            borderColor: '#000',
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    </script>
+  </div>
+</div>
+{% endblock %}

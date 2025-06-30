@@ -32,7 +32,16 @@
 <div class="container mt-4">
   <div class="card shadow rounded p-4">
     <h1 class="mb-3 fw-normal text-center">Available Parking Lots</h1>
+    <form method="get" action="{{ url_for('auth.user_dashboard') }}" class="mb-4">
+      <div class="form-floating">
+        <input type="text" class="form-control" style="border-radius: 1.2rem;" id="search" name="q" placeholder="Search..." value="{{ query }}">
+        <label for="search">Search...</label>
+      </div>
+    </form>
 
+    {% if query %}
+      <h5 class="mb-3 text-center text-muted">Search Results for "{{ query }}":</h5>
+    {% endif %}
     {% if lots %}
       <div class="row">
         {% for lot in lots %}
@@ -54,7 +63,7 @@
         {% endfor %}
       </div>
     {% else %}
-      <p class="text-center">No parking lots found.</p>
+      <p class="text-center text-muted">No parking lots found.</p>
     {% endif %}
   </div>
 </div>

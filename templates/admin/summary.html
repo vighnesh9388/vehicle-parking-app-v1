@@ -1,0 +1,116 @@
+    {% extends "dash_layout.html" %}
+
+    <title>
+    {% block title %}
+    🚗 Park-Karo! - ADMIN
+    {% endblock %}
+    </title>
+
+    {% block styles %}
+    <style>
+    body {
+        background-color: #ebebeb;
+    }
+    .card {
+        border-radius: 1.2rem !important;
+    }
+    .card.shadow {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .btn-warning {
+        background-color: #ffc800;
+        border: none;
+    }
+    .btn-warning:hover {
+        background-color: #e6b800;
+    }
+    .spot-box {
+        border-radius: 0.5rem;
+    }
+    </style>
+    {% endblock %}
+
+    {% block content %}
+    <div class="container mt-4">
+    <div class="card shadow rounded p-4">
+        <h1 class="mb-3 fw-normal text-center">Summary</h1>
+
+        
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <div class="row">
+        <div class="col-md-4 ">
+            <h3 class="text-center mb-4">Revenue by Lot</h3>
+            {% if revenue_data %}
+                <canvas id="revenueChart"></canvas>
+            {% else %}
+                <p class="text-center text-muted">No revenue data to display.</p>
+            {% endif %}
+        </div>
+
+        <div class="col-md-6 offset-md-2">
+            <h3 class="text-center mb-4">Spot Status by Lot</h3>
+            {% if status_data %}
+                <canvas id="statusChart"></canvas>
+            {% else %}
+                <p class="text-center text-muted">No spot status data to display.</p>
+            {% endif %}
+        </div>
+        </div>
+
+        <script>
+            const statusData = JSON.parse('{{ status_data | tojson | safe }}');
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+
+            new Chart(statusCtx, {
+                type: 'bar',
+                data: {
+                labels: statusData.map(d => d.lot),
+                datasets: [
+                    {
+                    label: 'Available',
+                    data: statusData.map(d => d.available),
+                    backgroundColor: '#a6d96a',
+                    borderWidth: 2,
+                    borderColor: '#000',
+                    },
+                    {
+                    label: 'Occupied',
+                    data: statusData.map(d => d.occupied),
+                    backgroundColor: '#ff6384',
+                    borderWidth: 2,
+                    borderColor: '#000',
+                    }
+                ]
+                },
+                options: {
+                responsive: true,
+                scales: {
+                    y: {
+                    beginAtZero: true
+                    }
+                }
+                }
+            
+            });
+
+            const revenueData = JSON.parse('{{ revenue_data | tojson | safe }}');
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+
+            new Chart(revenueCtx, {
+                type: 'doughnut',
+                data: {
+                labels: revenueData.map(d => d.lot),
+                datasets: [{
+                    label: '$ Revenue',
+                    data: revenueData.map(d => d.revenue),
+                    backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#8affc1', '#b784f2'],
+                    borderColor: '#000',
+                }]
+                }
+            });
+
+        </script>
+    </div>
+    </div>
+    {% endblock %}

@@ -1,4 +1,4 @@
-  {% extends "dash_layout.html" %}
+{% extends "dash_layout.html" %}
 
   <title>
       {% block title %}
@@ -45,7 +45,9 @@
             <a href="{{ url_for('auth.edit_lot', lot_id=lot.id) }}" class="btn btn-primary btn-sm">Edit</a>
             <a href="{{ url_for('auth.delete_lot', lot_id=lot.id) }}" class="btn btn-danger btn-sm">Delete</a>
           </div>
+	
           {% set occupied = lot.total_spots - lot.spots | selectattr('status', 'equalto', False) | list | length %}
+												 
           {% set is_full = occupied == lot.total_spots %}
           <p class="text-center fw-bold {{ 'text-danger' if is_full else 'text-success' }}">
             (Occupied: {{ occupied }}/{{ lot.total_spots }})

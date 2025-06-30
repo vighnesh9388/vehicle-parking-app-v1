@@ -11,37 +11,31 @@
         <h3 class="h2 mb-3 fw-normal text-center">Release Parking Spot</h3>
     <form method="POST">
 
-      <!-- Spot ID -->
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="spotID" name="spot_id" value="{{ reservation.spot_id }}" readonly>
         <label for="spotID">Spot ID</label>
       </div>
 
-      <!-- Vehicle Number -->
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="vehicleNumber" name="vehicle_number" value="{{ reservation.vehicle_number }}" readonly>
         <label for="vehicleNumber">Vehicle Number</label>
       </div>
 
-      <!-- Parking Time -->
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="startTime" name="start_time" value="{{ reservation.start_time.strftime('%d-%m-%Y %H:%M') }}" readonly>
         <label for="startTime">Parking Time</label>
       </div>
 
-      <!-- Releasing Time -->
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="nowTime" name="now_time" value="{{ now.strftime('%d-%m-%Y %H:%M') }}" readonly>
         <label for="nowTime">Releasing Time</label>
       </div>
 
-      <!-- Estimated Cost -->
       <div class="form-floating mb-4">
         <input type="text" class="form-control" id="cost" name="cost" value="${{ estimated_cost }}" readonly>
         <label for="cost">Total Cost</label>
       </div>
 
-      <!-- Action Buttons -->
       <div class="row">
         <div class="col">
           <button type="submit" class="w-100 btn btn-success">Pay & Release</button>
