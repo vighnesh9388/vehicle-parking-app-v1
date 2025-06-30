@@ -14,8 +14,6 @@
 
 - Flask-SQLAlchemy (ORM for database)
 
-- Flask-Login (user session management)
-
 - Jinja2 (templating engine in Flask)
 
 - Werkzeug (password hashing and verification)
