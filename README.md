@@ -2,7 +2,7 @@
 **Park-Karo!** Is a **Parking Lot Management System** that allows users to view availability, search, and book parking spots in a parking lot of their choice, along with their parking history. The app also has a separate dashboard for Admin that allows them to manage lots, monitor spot usage, search lots or users, view user details and analyze revenue/lot statistics.   
 
 
-![image](https://github.com/user-attachments/assets/0e862cb7-dc59-4627-9f44-e04f1c241f6c)![image](https://github.com/user-attachments/assets/634b5afc-a614-421a-9e9f-66970895859f)
+![image](https://github.com/user-attachments/assets/0e862cb7-dc59-4627-9f44-e04f1c241f6c) ![image](https://github.com/user-attachments/assets/634b5afc-a614-421a-9e9f-66970895859f)
 
 ## Technologies Used
 
